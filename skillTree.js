@@ -182,48 +182,46 @@ class SkillTree {
   }
 
   drawConnections() {
-      this.ctx.save();
-      this.ctx.strokeStyle = '#ffffff';
-      this.ctx.lineWidth = 4;
-      this.ctx.lineCap = 'round';
-      this.ctx.lineJoin = 'round';
-
-      const groupedSkills = {};
-      this.skills.forEach(skill => {
-          if (skill.groupId) {
-              if (!groupedSkills[skill.groupId]) {
-                  groupedSkills[skill.groupId] = [];
-              }
-              groupedSkills[skill.groupId].push(skill);
-          }
-      });
-
-      for (const groupId in groupedSkills) {
-          const skills = groupedSkills[groupId];
-          for (let i = 0; i < skills.length - 1; i++) {
-              for (let j = i + 1; j < skills.length; j++) {
-                  this.ctx.beginPath();
-                  this.ctx.moveTo(skills[i].x, skills[i].y);
-                  this.ctx.lineTo(skills[j].x, skills[j].y);
-                  this.ctx.stroke();
-
-                  // Draw black outline
-                  this.ctx.strokeStyle = '#000000';
-                  this.ctx.lineWidth = 6;
-                  this.ctx.globalCompositeOperation = 'destination-over';
-                  this.ctx.stroke();
-
-                  // Reset for next line
-                  this.ctx.strokeStyle = '#ffffff';
-                  this.ctx.lineWidth = 4;
-                  this.ctx.globalCompositeOperation = 'source-over';
-              }
-          }
-      }
-
-      this.ctx.restore();
+    this.ctx.save();
+    this.ctx.strokeStyle = '#ffffff';
+    this.ctx.lineWidth = 4;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    const groupedSkills = {};
+    this.skills.forEach(skill => {
+        if (skill.groupId) {
+            const groupIds = skill.groupId.split(' ');
+            groupIds.forEach(groupId => {
+                if (!groupedSkills[groupId]) {
+                    groupedSkills[groupId] = [];
+                }
+                groupedSkills[groupId].push(skill);
+            });
+        }
+    });
+    for (const groupId in groupedSkills) {
+        const skills = groupedSkills[groupId];
+        for (let i = 0; i < skills.length - 1; i++) {
+            for (let j = i + 1; j < skills.length; j++) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(skills[i].x, skills[i].y);
+                this.ctx.lineTo(skills[j].x, skills[j].y);
+                this.ctx.stroke();
+                // Draw black outline
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.lineWidth = 6;
+                this.ctx.globalCompositeOperation = 'destination-over';
+                this.ctx.stroke();
+                // Reset for next line
+                this.ctx.strokeStyle = '#ffffff';
+                this.ctx.lineWidth = 4;
+                this.ctx.globalCompositeOperation = 'source-over';
+            }
+        }
+    }
+    this.ctx.restore();
   }
-
+  
   drawSkills() {
       for (const skill of this.skills) {
           this.ctx.beginPath();
@@ -287,16 +285,17 @@ class SkillTree {
   }
 
   saveSkillChanges(skill) {
-      skill.name = document.getElementById('skill-name').value;
-      skill.cost = parseInt(document.getElementById('skill-cost').value);
-      skill.level = parseInt(document.getElementById('skill-level').value);
-      skill.unlocked = document.getElementById('skill-unlocked').checked;
-      skill.groupId = document.getElementById('skill-group-id').value || null;
-
-      this.closeSkillEditor();
-      this.saveState();
-      this.draw();
+    skill.name = document.getElementById('skill-name').value;
+    skill.cost = parseInt(document.getElementById('skill-cost').value);
+    skill.level = parseInt(document.getElementById('skill-level').value);
+    skill.unlocked = document.getElementById('skill-unlocked').checked;
+    skill.groupId = document.getElementById('skill-group-id').value.trim() || null;
+    this.closeSkillEditor();
+    this.saveState();
+    this.draw();
   }
+
+
 
   closeSkillEditor() {
       document.getElementById('skill-editor').classList.add('hidden');
