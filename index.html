@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+ Copyright (c) 2024 Veikka Hongisto
+ This code is free to use as long as this copyright notice is kept in the code.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Skill Tree Creator</title>
+     <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <aside id="sidebar">
+            <h2>Skill Nodes</h2>
+            <div id="skill-templates">
+                <div class="skill-node" draggable="true" data-type="basic" id="basic-template">Basic Skill</div>
+                <div class="skill-node" draggable="true" data-type="advanced" id="advanced-template">Advanced Skill</div>
+                <div class="skill-node" draggable="true" data-type="ultimate" id="ultimate-template">Ultimate Skill</div>
+            </div>
+            <button id="undo-btn">Undo</button>
+            <button id="redo-btn">Redo</button>
+            <button id="export-btn">Export JSON</button>
+            <form id="import-form">
+                <input type="file" id="import-file" accept=".json">
+                <label for="import-file">Choose a file</label>
+                <button type="submit" id="import-btn">Import JSON</button>
+            </form>
+        </aside>
+        <main>
+            <canvas id="skill-tree-canvas"></canvas>
+        </main>
+    
+
+    </div>
+    <div id="skill-editor" class="hidden">
+        <div id="skill-editor-header">
+            <h3>Edit Skill</h3>
+        </div>
+        <label for="skill-name">Name:</label>
+        <input type="text" id="skill-name">
+        <label for="skill-cost">Cost:</label>
+        <input type="number" id="skill-cost" min="0">
+        <label for="skill-level">Level:</label>
+        <input type="number" id="skill-level" min="1">
+        <label for="skill-unlocked">Unlocked:</label>
+        <input type="checkbox" id="skill-unlocked">
+        <label for="skill-group-id">Group ID:</label>
+        <input type="text" id="skill-group-id">
+        <button id="delete-skill">Delete</button>
+        <button id="save-skill">Save</button>
+        <button id="cancel-edit">Cancel</button>
+    </div>
+    <script src="skillTree.js"></script>
+    <script src="dragAndDrop.js"></script>
+    <script src="dragSkillEditor.js"></script>
+</body>
+</html>

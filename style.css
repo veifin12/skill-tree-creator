@@ -1,0 +1,300 @@
+/*
+ * Copyright (c) 2024 Veikka Hongisto
+ * This code is free to use as long as this copyright notice is kept in the code.
+ */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+#app {
+  display: flex;
+  height: 100%;
+}
+
+#sidebar {
+  width: 250px;
+  background-color: #2d2d2d;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+main {
+  flex-grow: 1;
+  position: relative;
+}
+
+#skill-tree-canvas {
+  width: 100%;
+  height: 100%;
+  background-color: #333333;
+}
+
+/* Styles for draggable skill nodes in the sidebar */
+#skill-templates .skill-node {
+  background-color: rgba(74, 74, 74, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: move;
+  margin-bottom: 10px;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+}
+
+#skill-templates .skill-node:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Styles for skill nodes on the canvas */
+#skill-tree-canvas .skill-node {
+  position: absolute;
+  background-color: rgba(74, 74, 74, 0.9);
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: move;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+}
+
+#skill-tree-canvas .skill-node:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.skill-node[data-type="basic"] {
+  background-color: rgba(58, 123, 213, 0.9);
+}
+
+.skill-node[data-type="advanced"] {
+  background-color: rgba(0, 176, 155, 0.9);
+}
+
+.skill-node[data-type="ultimate"] {
+  background-color: rgba(211, 149, 155, 0.9);
+}
+
+#export-btn, #undo-btn, #redo-btn, #import-btn, #import-file + label {
+  display: block;
+  width: calc(100% - 24px);
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#export-btn:hover, #undo-btn:hover, #redo-btn:hover, #import-btn:hover, #import-file + label:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#undo-btn, #redo-btn {
+  background-color: #2196F3;
+}
+
+#undo-btn:hover, #redo-btn:hover {
+  background-color: #1e87db;
+}
+
+#import-btn, #import-file + label {
+  background-color: #ff9800;
+}
+
+#import-btn:hover, #import-file + label:hover {
+  background-color: #f57c00;
+}
+
+#skill-editor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2d2d2d;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: #e0e0e0;
+  width: 300px;
+  cursor: move;
+  user-select: none;
+}
+
+#skill-editor-header {
+  background-color: #1e1e1e;
+  padding: 10px;
+  margin: -25px -25px 15px -25px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  cursor: move;
+}
+
+#skill-editor-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+#skill-editor.hidden {
+  display: none;
+}
+
+#skill-editor label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+#skill-editor input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  background-color: #3d3d3d;
+  border: 1px solid #555555;
+  color: #e0e0e0;
+  border-radius: 4px;
+}
+
+#skill-editor button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#skill-editor button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+#skill-editor button#cancel-edit {
+  background-color: #f44336;
+}
+
+#skill-editor button#cancel-edit:hover {
+  background-color: #d32f2f;
+}
+
+#skill-editor button#delete-skill {
+  background-color: #f44336;
+  margin-right: 10px;
+}
+
+#skill-editor button#delete-skill:hover {
+  background-color: #d32f2f;
+}
+
+#import-form {
+  margin-top: 15px;
+  position: relative;
+}
+
+#import-file {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+#import-file + label {
+  display: inline-block;
+  width: calc(100% - 24px);
+  box-sizing: border-box;
+}
+
+#import-btn {
+  display: inline-block;
+  width: calc(100% - 24px);
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+#skill-editor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2d2d2d;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: #e0e0e0;
+  width: 300px;
+  user-select: none;
+  z-index: 1000;
+}
+
+#skill-editor-header {
+  background-color: #1e1e1e;
+  padding: 10px;
+  margin: -25px -25px 15px -25px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  cursor: move;
+}
+
+#skill-editor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2d2d2d;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: #e0e0e0;
+  width: 300px;
+  user-select: none;
+  z-index: 1000;
+  cursor: grab;
+}
+
+#skill-editor-header {
+  background-color: #1e1e1e;
+  padding: 10px;
+  margin: -25px -25px 15px -25px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  cursor: grab;
+}
+
+#skill-editor-header:active {
+  cursor: grabbing;
+}
